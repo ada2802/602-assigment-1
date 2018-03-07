@@ -92,6 +92,7 @@ def action(shortName):
             return;
     except KeyError:
         print ('Action %s not found' % action) 
+        
     main()
     return;
 
@@ -111,38 +112,19 @@ def trade():
     print("================================================================")
     print("\n")
 
-    stock_number = input("Select your stock: ")
-    shortName = stock_list[stock_number]
-
-    try:
-        if stock_number == '1':        
-            info = yahoo_stock_price (shortName)
-            print(info)
-            df = action(shortName)
-            return df;
-        elif stock_number == '2':
-            info = yahoo_stock_price (shortName)
-            print(info)
-            df = action(shortName)
-            return df;
-        elif stock_number == '3':
-            info = yahoo_stock_price (shortName)
-            print(info)
-            df = action(shortName)
-            return df;
-        elif stock_number == '4':
-            info = yahoo_stock_price (shortName)
-            print(info)
-            df = action(shortName)
-            return df;
-        else:
-            info = yahoo_stock_price (shortName)
-            print(info)
-            df = action(shortName)
-            return df;
-    except KeyError:
+    
+    stock_number = 0
+    while int(stock_number) in range (5): 
+        
+        stock_number = int(input("Select your stock: "))
+        shortName = stock_list[str(stock_number)]
+        
+        info = yahoo_stock_price (shortName)
+        print(info)
+        df = action(shortName)
+        return df;
+    else:
         print ('Stock %s not found' % stock_list)
-
     return;
 
   
@@ -169,7 +151,21 @@ def showBlotter(trade_his):
     df=trade_arr[::-1]
     
     df = np.asarray(df)
-    print(df)
+    #print(df)
+    #side+"|"+shortName+"|"+str(quatity)+"|"+price+"|"+timestamp+"|"+str(total_amount)
+    print("\n")           
+    print("=================== showBlotter ===================")
+    print("\n")
+    for i in range(nrow):
+        print('    Side              : '+df[i][0])
+        print('    Ticker            : '+df[i][1])
+        print('    Quantity          : '+str(abs(float(df[i][2]))))
+        print('    Price             : $'+df[i][3])
+        print('    Timestamp         : '+df[i][4]) 
+        print('    Amount            : $'+str(abs(float(df[i][5]))))
+        print("\n")
+    print("==================================================")
+    print("\n")
     return;
     
  
@@ -190,22 +186,22 @@ def calculateProfitLoss(trade_his,shortName):
             ticker_list = ticker_list + trade_arr[i]
         else:
             i=i+1
-    print(ticker_list)
+   # print(ticker_list)
     
     if ticker_list != '':
         last_trade = ticker_list[(len(ticker_list)-6):len(ticker_list)]
-        print(last_trade)
+        #print(last_trade)
                 
         #print('Ticker: '+shortName)                
         position=0.0
         for j in range(int(len(ticker_list)/6)):
             position = position + float(ticker_list[j*6+2])
         position = str(position)
-        print('Position: '+position)
+        #print('Position: '+position)
                 
         info = yahoo_stock_price (shortName)
         price = (info.split("|"))[2]
-        print('Current Market Price: '+price)
+        #print('Current Market Price: '+price)
                 
         #VMAP of what the user holded the ticker
         total_quatity = 0.0
@@ -220,7 +216,7 @@ def calculateProfitLoss(trade_his,shortName):
             VMAP = 0.0
         else:
             VMAP = abs(total_buySell/total_quatity)
-        print('VMAP: '+str(VMAP))
+        #print('VMAP: '+str(VMAP))
                 
         #bid/ask price on holded quatity
         bid=0.0
@@ -232,7 +228,7 @@ def calculateProfitLoss(trade_his,shortName):
             UPL = float(position) * (float(bid)-VMAP)
         else:
             UPL = float(position) * (float(ask)-VMAP)
-        print('Unrealized P/L: '+str(UPL))
+        #print('Unrealized P/L: '+str(UPL))
         
         #RPL happened while the user buy and sell the ticker
         #RPL only count min(#buy, #sell) *(avg of sell - avg of buy)
@@ -255,7 +251,7 @@ def calculateProfitLoss(trade_his,shortName):
                 RPL = abs(sell_quantity) *((sell_total/abs(sell_quantity)) - (abs(buy_total)/buy_quantity))
             else:
                 RPL = buy_quantity *((sell_total/abs(sell_quantity)) - (abs(buy_total)/buy_quantity))
-        print('Realized P/L: '+str(RPL))
+        #print('Realized P/L: '+str(RPL))
         
         return str(last_trade)+"|"+shortName+"|"+str(position)+"|"+str(price)+"|"+str(VMAP)+"|"+str(UPL)+"|"+str(RPL);     
     else:
@@ -286,22 +282,21 @@ def showprofitLoss(pl):
 # show the main menu
 def main():  
     #creat a list to store trade history
-    trade_his=[]
-    
-    print("\n")
-    print('======================== The Main Menu ========================')
-    print("\n")
-    items = {   '1':'Trade', 
-                '2':'Show Blotter', 
-                '3':'Show P/L', 
-                '4':'Quit',}
-    print(items)
-    print("\n")
-    print("================================================================")
-    print("\n")
-    
+    trade_his=[]   
     choice = 0 
     while int(choice) in range (4):
+        print("\n")
+        print('======================== The Main Menu ========================')
+        print("\n")
+        items = {   '1':'Trade', 
+                    '2':'Show Blotter', 
+                    '3':'Show P/L', 
+                    '4':'Quit',}
+        print(items)
+        print("\n")
+        print("================================================================")
+        print("\n")
+        
         choice = int(input("Select a number of your choice: "))
         print(items[str(choice)] )
 
